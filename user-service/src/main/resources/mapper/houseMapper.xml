@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zqq.house.user.mapper.HouseMapper">
+   
+   <sql id="houseField">
+     a.id,
+     a.type,
+     a.name,
+     a.price,
+     a.images,
+     a.area,
+     a.beds,
+     a.baths,
+     a.rating,
+     a.remarks,
+     a.properties,
+     a.floor_plan,
+     a.tags,
+     a.create_time,
+     a.city_id,
+     a.community_id,
+     a.address,
+     a.state
+   </sql>
+
+  <resultMap id="house" type="com.zqq.house.common.entity.House">
+    <result property="id" column="id"/>
+    <result property="type" column="type"/>
+    <result property="price" column="price"/>
+    <result property="images" column="images"/>
+    <result property="area" column="area"/>
+    <result property="beds" column="beds"/>
+    <result property="baths" column="baths"/>
+    <result property="rating" column="rating"/>
+    <result property="remarks" column="remarks"/>
+    <result property="properties" column="properties"/>
+    <result property="floorPlan" column="floor_plan"/>
+    <result property="tags" column="tags"/>
+    <result property="createTime" column="create_time"/>
+    <result property="cityId" column="city_id"/>
+    <result property="communityId" column="community_id"/>
+    <result property="address" column="address"/>
+    <result property="state" column="state"/>
+  </resultMap>
+
+  <!--条件分页查询-->
+  <select id="selectPageHouses" resultMap="house">
+    select <include refid="houseField"/>
+    from house a
+    <include refid="houseCondition"/>
+    <choose>
+      <when test="house.sort != null and house.sort == 'price_asc'">
+        order by a.price asc
+      </when>
+      <when test="house.sort != null and house.sort == 'price_desc'">
+        order by a.price desc
+      </when>
+      <otherwise>
+        order by a.create_time desc
+      </otherwise>
+    </choose>
+    <if test="params.offset != null and params.limit != null">
+      limit #{params.limit},#{params.offset}
+    </if>
+    <if test="params.offset==null and params.limit != null">
+      limit #{params.limit}
+    </if>
+  </select>
+
+  <!--查询条件代码块-->
+  <sql id="houseCondition">
+    <where>
+      <if test="house.id != null and house.id != 0">
+        and a.id = #{house.id}
+      </if>
+      <if test="house.type != null">
+        and a.type = #{house.type}
+      </if>
+      <if test="house.communityId != null and house.communityId!= 0">
+        and a.community_id = #{house.communityId}
+      </if>
+      <if test="house.ids">
+        and a.id in
+        <foreach collection="house.ids" item="item" separator="," index="index" open="(" close=")">
+          #{item}
+        </foreach>
+      </if>
+    </where>
+  </sql>
+
+  <!--房产信息总记录数-->
+  <select id="selectHouseCount" resultType="java.lang.Long">
+    select count(id)
+    from house
+  </select>
+  
+  
+  <!--新增 房产信息-->
+  <insert id="insert" keyColumn="id" keyProperty="id" useGeneratedKeys="true">
+    insert into house(
+    type,
+    name,
+    price,
+    images,
+    area,
+    beds,
+    baths,
+    rating,
+    remarks,
+    properties,
+    floor_plan,
+    tags,
+    create_time,
+    city_id,
+    community_id,
+    address,
+    state
+    )
+    value(
+    #{type},
+    #{name},
+    #{price},
+    #{images},
+    #{area},
+    #{beds},
+    #{baths},
+    #{rating},
+    #{remarks},
+    #{properties},
+    #{floorPlan},
+    #{tags},
+    #{createTime},
+    #{cityId},
+    #{communityId},
+    #{address},
+    #{state}
+    )
+  </insert>
+</mapper>

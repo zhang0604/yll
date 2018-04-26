@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zqq.house.user.mapper.HouseUserMapper">
+
+    <sql id="houseUserFiled">
+        h.id,
+        h.house_id,
+        h.user_id,
+        h.create_time,
+        h.type
+    </sql>
+
+    <resultMap id="houseUserMap" type="com.zqq.house.common.entity.HouseUser" autoMapping="true">
+        <result property="id" column="id"/>
+        <result property="userId" column="user_id"/>
+        <result property="houseId" column="house_id"/>
+    </resultMap>
+
+    <!--条件查询houseUser的关联关系-->
+    <select id="selectHouseUserByWhere" resultMap="houseUserMap">
+        select <include refid="houseUserFiled"/>
+        from house_user h
+        <where>
+            <if test="id != null and id!= 0">
+                and id = #{id}
+            </if>
+            <if test="houseId!=null and houseId!=0">
+                and house_id = #{houseId}
+            </if>
+            <if test="userId!=null and userId != 0">
+                and user_id = #{userId}
+            </if>
+            <if test="type != null and type!=0">
+                and type = #{type}
+            </if>
+        </where>
+    </select>
+
+    <!--保存 房产信息和用户信息的关联关系-->
+    <insert id="insertMapping">
+        insert into house_user
+        (
+        house_id,
+        user_id,
+        create_time,
+        type
+        )values(
+        #{houseId},
+        #{userId},
+        NOW(),
+        #{type}
+        )
+    </insert>
+
+    <!--更新house_user表(收藏&&取消收藏)-->
+    <update id="update">
+        update house_user
+        set type = #{type}
+        where
+        house_id = #{houseId} and user_id = #{userId}
+    </update>
+
+    <!--插入留言信息-->
+    <insert id="insertMsg">
+        insert into house_msg
+        (
+        msg,
+        create_time,
+        agent_id,
+        house_id,
+        user_name
+        )values
+        (
+        #{msg},
+        #{createTime},
+        #{agentId},
+        #{houseId},
+        #{email}
+        )
+    </insert>
+</mapper>

@@ -1,0 +1,34 @@
+server:
+  port: 8088
+spring:
+  application:
+    name: api-gateway
+  freemarker:
+    charset: UTF-8
+    content-type: text/html;charset=UTF-8
+    suffix: .ftl
+    requestContextAttribute: request
+    settings:
+      auto_import: common/common.ftl as common
+      default_encoding: UTF-8
+  mail:
+    host: smtp.163.com
+    username: 17601246766@163.com
+    password: Ff19950309
+    properties.mail.smtp:
+      auth: true
+      starttls.enable: true
+      starttls.required: true
+eureka.client.service-url.defaultZone: http://127.0.0.1:8666/eureka/
+eureka:
+  client:
+    register-with-eureka: false
+logbook:
+  write:
+    level: info
+spring.user.service: http://user/
+
+spring.filepath: D:\houses\upload\images
+
+properties.myHost: http://127.0.0.1:8080
+spring.image.url: http://127.0.0.1:8182/images
